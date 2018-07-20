@@ -5,24 +5,24 @@ import ru.gereds.enums.ProgFlags;
 
 
 /**
- * Class NCProgramme - contains all necessary info about NC programme.
+ * Class NCfile - contains all necessary info about NC programme.
  * Such us Memory name (Oname), BluePrint name (commentName), extention , And programme himself.
  *
  * @author  Bugakov Viatcheslav(rogerkind@mail.ru)
  *
  */
 
-public class NCProgramme {
+public class NCfile {
     private String memoryName; // O name
     private String commentName;
     private Extension extention;
     private String body;
     private static final String NOCOMENT = "no comment";
 
-     public NCProgramme(String body) {
+     public NCfile(String body) {
          this.body = body;
-         this.commentName = this.findName(ProgFlags.PROGSTART);
-         this.memoryName = this.findName(ProgFlags.COMMENTSTART);
+         this.commentName = this.findName(ProgFlags.COMMENTSTART);
+         this.memoryName = this.findName(ProgFlags.PROGSTART);
          this.extention = Extension.NC;
      }
 
@@ -58,15 +58,20 @@ public class NCProgramme {
 
     private String findName(ProgFlags flag) {
      String result = "";
+     boolean finded = false;
         String[] lines = this.body.split("\\r?\\n");
         for (String line : lines) {
-            if (flag == ProgFlags.PROGSTART) {
+            if (flag == ProgFlags.PROGSTART && !finded) {
                 String[] words = line.split("\\s");
                 for (String word : words) {
                     if (word.startsWith(ProgFlags.PROGSTART.flag)) {
                         result = word;
+                        finded = true;
                         break;
                     }
+                }
+                if (finded) {
+                    break;
                 }
             } else {
                 if (line.indexOf(ProgFlags.COMMENTSTART.flag) > 0) {
